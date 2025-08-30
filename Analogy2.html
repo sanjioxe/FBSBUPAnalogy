@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Analogy Quiz</title>
+  <style>
+    :root{
+      --bg:#121212;
+      --card:#1e1e1e;
+      --chip:#2a2a2a;
+      --chip-hover:#3a3a3a;
+      --accent:#007aff;
+      --ok:#28a745;
+      --bad:#dc3545;
+      --text:#ffffff;
+      --dim:#dddddd;
+      --correct:#4caf50;
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      margin:0; padding:16px;
+      background:var(--bg); color:var(--text);
+    }
+    h1{
+      text-align:center; font-size:24px; margin:8px 0 16px;
+    }
+    .question{
+      background:var(--card);
+      border-radius:16px;
+      box-shadow:0 4px 8px rgba(0,0,0,.3);
+      padding:12px;
+      margin:12px 0;
+      font-size:14px;
+      transition:border .2s;
+      border:2px solid transparent;
+    }
+    .question.correct{ border-color:var(--ok); }
+    .question.incorrect{ border-color:var(--bad); }
+
+    .options{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+      margin-top:8px;
+    }
+    @media (max-width:360px){
+      .options{ grid-template-columns:1fr; }
+    }
+
+    .option{ position:relative; }
+    .option input{ display:none; }
+
+    .option label{
+      display:block;
+      width:100%;
+      background:var(--chip);
+      color:var(--dim);
+      padding:10px;
+      border-radius:12px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+      transition:background .25s, transform .15s, color .25s, box-shadow .2s;
+      box-shadow:0 0 0 0 transparent;
+    }
+    .option label:hover{ background:var(--chip-hover); transform:scale(1.03); }
+    .option label:active{ transform:scale(0.98); }
+
+    .option input:checked + label{
+      background:var(--accent);
+      color:#fff;
+      font-weight:600;
+      box-shadow:0 0 0 2px rgba(0,122,255,.25) inset;
+    }
+
+    .correct-answer{
+      display:none;
+      color:var(--correct);
+      font-weight:600;
+      font-size:13px;
+      margin-top:6px;
+    }
+
+    .actions{
+      display:flex; gap:10px; justify-content:center; margin:18px 0 6px;
+    }
+    button{
+      padding:10px 18px;
+      font-size:14px;
+      border:none; border-radius:12px;
+      background:var(--accent); color:#fff;
+      cursor:pointer;
+      transition:background .25s, transform .15s;
+    }
+    button:hover{ background:#005ecb; }
+    button:active{ transform:scale(0.98); }
+    #result{
+      text-align:center; font-size:16px; font-weight:700; margin-top:8px;
+    }
+
+    /* -------- Auto Question Numbering -------- */
+    form {
+      counter-reset: q-counter;
+    }
+    .question p::before {
+      counter-increment: q-counter;
+      content: "Q" counter(q-counter) ". ";
+      font-weight: bold;
+      margin-right: 6px;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <h1>Analogy Quiz</h1>
+
+  <form id="quizForm">
+
+    <!-- Q29 -->
+    <div class="question" id="q29">
+      <p>Earth : planet</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q29a" name="q29" value="A"><label for="q29a">Sun : star</label></div>
+        <div class="option"><input type="radio" id="q29b" name="q29" value="B"><label for="q29b">Mars : planet</label></div>
+        <div class="option"><input type="radio" id="q29c" name="q29" value="C"><label for="q29c">May : month</label></div>
+        <div class="option"><input type="radio" id="q29d" name="q29" value="D"><label for="q29d">Jupiter : gas giant</label></div>
+      </div>
+      <div class="correct-answer">Correct: May : month</div>
+    </div>
+
+    <!-- Q30 -->
+    <div class="question" id="q30">
+      <p>Gravity : pull</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q30a" name="q30" value="A"><label for="q30a">Magnetism : attraction</label></div>
+        <div class="option"><input type="radio" id="q30b" name="q30" value="B"><label for="q30b">Friction : resistance</label></div>
+        <div class="option"><input type="radio" id="q30c" name="q30" value="C"><label for="q30c">Electricity : shock</label></div>
+        <div class="option"><input type="radio" id="q30d" name="q30" value="D"><label for="q30d">Heat : warmth</label></div>
+      </div>
+      <div class="correct-answer">Correct: Magnetism : attraction</div>
+    </div>
+
+    <!-- Q31 -->
+    <div class="question" id="q31">
+      <p>Milk : cheese</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q31a" name="q31" value="A"><label for="q31a">Grape : wine</label></div>
+        <div class="option"><input type="radio" id="q31b" name="q31" value="B"><label for="q31b">Tree : wood</label></div>
+        <div class="option"><input type="radio" id="q31c" name="q31" value="C"><label for="q31c">Wheat : bread</label></div>
+        <div class="option"><input type="radio" id="q31d" name="q31" value="D"><label for="q31d">Clay : pottery</label></div>
+      </div>
+      <div class="correct-answer">Correct: Tree : wood</div>
+    </div>
+
+    <!-- Q32 -->
+    <div class="question" id="q32">
+      <p>Judge : court</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q32a" name="q32" value="A"><label for="q32a">Chef : kitchen</label></div>
+        <div class="option"><input type="radio" id="q32b" name="q32" value="B"><label for="q32b">Doctor : hospital</label></div>
+        <div class="option"><input type="radio" id="q32c" name="q32" value="C"><label for="q32c">Teacher : school</label></div>
+        <div class="option"><input type="radio" id="q32d" name="q32" value="D"><label for="q32d">Actor : stage</label></div>
+      </div>
+      <div class="correct-answer">Correct: Doctor : hospital</div>
+    </div>
+
+    <!-- Q33 -->
+    <div class="question" id="q33">
+      <p>Criminal : offence</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q33a" name="q33" value="A"><label for="q33a">Judge : judgement</label></div>
+        <div class="option"><input type="radio" id="q33b" name="q33" value="B"><label for="q33b">Student : learning</label></div>
+        <div class="option"><input type="radio" id="q33c" name="q33" value="C"><label for="q33c">Soldier : combat</label></div>
+        <div class="option"><input type="radio" id="q33d" name="q33" value="D"><label for="q33d">Artist : creativity</label></div>
+      </div>
+      <div class="correct-answer">Correct: Judge : judgement</div>
+    </div>
+
+    <!-- Q34 -->
+    <div class="question" id="q34">
+      <p>Senate : congress</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q34a" name="q34" value="A"><label for="q34a">State : country</label></div>
+        <div class="option"><input type="radio" id="q34b" name="q34" value="B"><label for="q34b">Branch : tree</label></div>
+        <div class="option"><input type="radio" id="q34c" name="q34" value="C"><label for="q34c">Lobby : hotel</label></div>
+        <div class="option"><input type="radio" id="q34d" name="q34" value="D"><label for="q34d">Finger : hand</label></div>
+      </div>
+      <div class="correct-answer">Correct: Lobby : hotel</div>
+    </div>
+
+    <!-- Q35 -->
+    <div class="question" id="q35">
+      <p>Oasis : sand</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q35a" name="q35" value="A"><label for="q35a">Ocean : lake</label></div>
+        <div class="option"><input type="radio" id="q35b" name="q35" value="B"><label for="q35b">Island : water</label></div>
+        <div class="option"><input type="radio" id="q35c" name="q35" value="C"><label for="q35c">City : desert</label></div>
+        <div class="option"><input type="radio" id="q35d" name="q35" value="D"><label for="q35d">Star : sky</label></div>
+      </div>
+      <div class="correct-answer">Correct: Island : water</div>
+    </div>
+
+    <!-- Q36 -->
+    <div class="question" id="q36">
+      <p>Refinery : petroleum</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q36a" name="q36" value="A"><label for="q36a">Mill : grain</label></div>
+        <div class="option"><input type="radio" id="q36b" name="q36" value="B"><label for="q36b">Factory : product</label></div>
+        <div class="option"><input type="radio" id="q36c" name="q36" value="C"><label for="q36c">Farm : crop</label></div>
+        <div class="option"><input type="radio" id="q36d" name="q36" value="D"><label for="q36d">Kitchen : food</label></div>
+      </div>
+      <div class="correct-answer">Correct: Mill : grain</div>
+    </div>
+
+    <!-- Q37 -->
+    <div class="question" id="q37">
+      <p>Novelist : plot</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q37a" name="q37" value="A"><label for="q37a">Architect : blueprint</label></div>
+        <div class="option"><input type="radio" id="q37b" name="q37" value="B"><label for="q37b">Chef : recipe</label></div>
+        <div class="option"><input type="radio" id="q37c" name="q37" value="C"><label for="q37c">Composer : melody</label></div>
+        <div class="option"><input type="radio" id="q37d" name="q37" value="D"><label for="q37d">Sculptor : clay</label></div>
+      </div>
+      <div class="correct-answer">Correct: Architect : blueprint</div>
+    </div>
+
+    <!-- Q38 -->
+    <div class="question" id="q38">
+      <p>Faction : politics</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q38a" name="q38" value="A"><label for="q38a">Sect : religion</label></div>
+        <div class="option"><input type="radio" id="q38b" name="q38" value="B"><label for="q38b">Team : sports</label></div>
+        <div class="option"><input type="radio" id="q38c" name="q38" value="C"><label for="q38c">Clan : family</label></div>
+        <div class="option"><input type="radio" id="q38d" name="q38" value="D"><label for="q38d">Club : hobby</label></div>
+      </div>
+      <div class="correct-answer">Correct: Sect : religion</div>
+    </div>
+
+    <!-- Q39 -->
+    <div class="question" id="q39">
+      <p>Misogynist : feminism</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q39a" name="q39" value="A"><label for="q39a">Bureaucrat : anarchy</label></div>
+        <div class="option"><input type="radio" id="q39b" name="q39" value="B"><label for="q39b">Capitalist : communism</label></div>
+        <div class="option"><input type="radio" id="q39c" name="q39" value="C"><label for="q39c">Pacifist : war</label></div>
+        <div class="option"><input type="radio" id="q39d" name="q39" value="D"><label for="q39d">Atheist : religion</label></div>
+      </div>
+      <div class="correct-answer">Correct: Bureaucrat : anarchy</div>
+    </div>
+
+    <!-- Q40 -->
+    <div class="question" id="q40">
+      <p>Submissive : disobedient</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q40a" name="q40" value="A"><label for="q40a">Observant : defiant</label></div>
+        <div class="option"><input type="radio" id="q40b" name="q40" value="B"><label for="q40b">Obedient : stubborn</label></div>
+        <div class="option"><input type="radio" id="q40c" name="q40" value="C"><label for="q40c">Observe : defy</label></div>
+        <div class="option"><input type="radio" id="q40d" name="q40" value="D"><label for="q40d">Passive : active</label></div>
+      </div>
+      <div class="correct-answer">Correct: Observe : defy</div>
+    </div>
+
+    <!-- Q41 -->
+    <div class="question" id="q41">
+      <p>Antenna : signal</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q41a" name="q41" value="A"><label for="q41a">Net : fish</label></div>
+        <div class="option"><input type="radio" id="q41b" name="q41" value="B"><label for="q41b">Radar : aircraft</label></div>
+        <div class="option"><input type="radio" id="q41c" name="q41" value="C"><label for="q41c">Hook : lure</label></div>
+        <div class="option"><input type="radio" id="q41d" name="q41" value="D"><label for="q41d">Hand : catch</label></div>
+      </div>
+      <div class="correct-answer">Correct: Net : fish</div>
+    </div>
+
+    <!-- Q42 -->
+    <div class="question" id="q42">
+      <p>Embezzle : fund</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q42a" name="q42" value="A"><label for="q42a">Steal : money</label></div>
+        <div class="option"><input type="radio" id="q42b" name="q42" value="B"><label for="q42b">Rob : bank</label></div>
+        <div class="option"><input type="radio" id="q42c" name="q42" value="C"><label for="q42c">Usurp : power</label></div>
+        <div class="option"><input type="radio" id="q42d" name="q42" value="D"><label for="q42d">Cheat : test</label></div>
+      </div>
+      <div class="correct-answer">Correct: Usurp : power</div>
+    </div>
+
+    <!-- Q43 -->
+    <div class="question" id="q43">
+      <p>Porter : terminal</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q43a" name="q43" value="A"><label for="q43a">Driver : car</label></div>
+        <div class="option"><input type="radio" id="q43b" name="q43" value="B"><label for="q43b">Waiter : table</label></div>
+        <div class="option"><input type="radio" id="q43c" name="q43" value="C"><label for="q43c">Waitress : restaurant</label></div>
+        <div class="option"><input type="radio" id="q43d" name="q43" value="D"><label for="q43d">Pilot : airplane</label></div>
+      </div>
+      <div class="correct-answer">Correct: Waitress : restaurant</div>
+    </div>
+
+    <!-- Q44 -->
+    <div class="question" id="q44">
+      <p>Seldom : frequency</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q44a" name="q44" value="A"><label for="q44a">Always : time</label></div>
+        <div class="option"><input type="radio" id="q44b" name="q44" value="B"><label for="q44b">Rarely : occasion</label></div>
+        <div class="option"><input type="radio" id="q44c" name="q44" value="C"><label for="q44c">Occasionally : constantly</label></div>
+        <div class="option"><input type="radio" id="q44d" name="q44" value="D"><label for="q44d">Never : always</label></div>
+      </div>
+      <div class="correct-answer">Correct: Occasionally : constantly</div>
+    </div>
+
+    <!-- Q45 -->
+    <div class="question" id="q45">
+      <p>Intrinsic : extrinsic</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q45a" name="q45" value="A"><label for="q45a">Intentional : accidental</label></div>
+        <div class="option"><input type="radio" id="q45b" name="q45" value="B"><label for="q45b">Internal : external</label></div>
+        <div class="option"><input type="radio" id="q45c" name="q45" value="C"><label for="q45c">Important : trivial</label></div>
+        <div class="option"><input type="radio" id="q45d" name="q45" value="D"><label for="q45d">Simple : complex</label></div>
+      </div>
+      <div class="correct-answer">Correct: Intentional : accidental</div>
+    </div>
+
+    <!-- Q46 -->
+    <div class="question" id="q46">
+      <p>Trophy : contestant</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q46a" name="q46" value="A"><label for="q46a">Award : winner</label></div>
+        <div class="option"><input type="radio" id="q46b" name="q46" value="B"><label for="q46b">Honors : student</label></div>
+        <div class="option"><input type="radio" id="q46c" name="q46" value="C"><label for="q46c">Medal : athlete</label></div>
+        <div class="option"><input type="radio" id="q46d" name="q46" value="D"><label for="q46d">Prize : competitor</label></div>
+      </div>
+      <div class="correct-answer">Correct: Honors : student</div>
+    </div>
+
+    <!-- Q47 -->
+    <div class="question" id="q47">
+      <p>Illusive : capture</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q47a" name="q47" value="A"><label for="q47a">Beautiful : see</label></div>
+        <div class="option"><input type="radio" id="q47b" name="q47" value="B"><label for="q47b">Headstrong : control</label></div>
+        <div class="option"><input type="radio" id="q47c" name="q47" value="C"><label for="q47c">Difficult : win</label></div>
+        <div class="option"><input type="radio" id="q47d" name="q47" value="D"><label for="q47d">Strong : lift</label></div>
+      </div>
+      <div class="correct-answer">Correct: Headstrong : control</div>
+    </div>
+
+    <!-- Q48 -->
+    <div class="question" id="q48">
+      <p>Continent : island</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q48a" name="q48" value="A"><label for="q48a">Ocean : lake</label></div>
+        <div class="option"><input type="radio" id="q48b" name="q48" value="B"><label for="q48b">Mountain : hill</label></div>
+        <div class="option"><input type="radio" id="q48c" name="q48" value="C"><label for="q48c">Desert : oasis</label></div>
+        <div class="option"><input type="radio" id="q48d" name="q48" value="D"><label for="q48d">Planet : asteroid</label></div>
+      </div>
+      <div class="correct-answer">Correct: Ocean : lake</div>
+    </div>
+
+    <!-- Q49 -->
+    <div class="question" id="q49">
+      <p>Food : menu</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q49a" name="q49" value="A"><label for="q49a">Merchandise : catalogue</label></div>
+        <div class="option"><input type="radio" id="q49b" name="q49" value="B"><label for="q49b">Clothing : closet</label></div>
+        <div class="option"><input type="radio" id="q49c" name="q49" value="C"><label for="q49c">Books : library</label></div>
+        <div class="option"><input type="radio" id="q49d" name="q49" value="D"><label for="q49d">Movies : list</label></div>
+      </div>
+      <div class="correct-answer">Correct: Merchandise : catalogue</div>
+    </div>
+
+    <!-- Q50 -->
+    <div class="question" id="q50">
+      <p>Embroidery : cloth</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q50a" name="q50" value="A"><label for="q50a">Mural : wall</label></div>
+        <div class="option"><input type="radio" id="q50b" name="q50" value="B"><label for="q50b">Painting : canvas</label></div>
+        <div class="option"><input type="radio" id="q50c" name="q50" value="C"><label for="q50c">Decor : room</label></div>
+        <div class="option"><input type="radio" id="q50d" name="q50" value="D"><label for="q50d">Graffiti : building</label></div>
+      </div>
+      <div class="correct-answer">Correct: Mural : wall</div>
+    </div>
+
+    <!-- Q51 -->
+    <div class="question" id="q51">
+      <p>Wing : air</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q51a" name="q51" value="A"><label for="q51a">Flipper : water</label></div>
+        <div class="option"><input type="radio" id="q51b" name="q51" value="B"><label for="q51b">Tire : road</label></div>
+        <div class="option"><input type="radio" id="q51c" name="q51" value="C"><label for="q51c">Sail : wind</label></div>
+        <div class="option"><input type="radio" id="q51d" name="q51" value="D"><label for="q51d">Propeller : water</label></div>
+      </div>
+      <div class="correct-answer">Correct: Flipper : water</div>
+    </div>
+
+    <!-- Q52 -->
+    <div class="question" id="q52">
+      <p>Nightmare : dream</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q52a" name="q52" value="A"><label for="q52a">Horror : movie</label></div>
+        <div class="option"><input type="radio" id="q52b" name="q52" value="B"><label for="q52b">Dread : expectation</label></div>
+        <div class="option"><input type="radio" id="q52c" name="q52" value="C"><label for="q52c">Mistake : error</label></div>
+        <div class="option"><input type="radio" id="q52d" name="q52" value="D"><label for="q52d">Anxiety : fear</label></div>
+      </div>
+      <div class="correct-answer">Correct: Dread : expectation</div>
+    </div>
+
+    <!-- Q53 -->
+    <div class="question" id="q53">
+      <p>Silo : corn</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q53a" name="q53" value="A"><label for="q53a">Vault : valuable</label></div>
+        <div class="option"><input type="radio" id="q53b" name="q53" value="B"><label for="q53b">Shed : tools</label></div>
+        <div class="option"><input type="radio" id="q53c" name="q53" value="C"><label for="q53c">Barn : hay</label></div>
+        <div class="option"><input type="radio" id="q53d" name="q53" value="D"><label for="q53d">Bottle : liquid</label></div>
+      </div>
+      <div class="correct-answer">Correct: Vault : valuable</div>
+    </div>
+
+    <!-- Q54 -->
+    <div class="question" id="q54">
+      <p>Teacher : ignorance</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q54a" name="q54" value="A"><label for="q54a">Doctor : illness</label></div>
+        <div class="option"><input type="radio" id="q54b" name="q54" value="B"><label for="q54b">Therapist : trauma</label></div>
+        <div class="option"><input type="radio" id="q54c" name="q54" value="C"><label for="q54c">Light : darkness</label></div>
+        <div class="option"><input type="radio" id="q54d" name="q54" value="D"><label for="q54d">Police : crime</label></div>
+      </div>
+      <div class="correct-answer">Correct: Light : darkness</div>
+    </div>
+
+    <!-- Q55 -->
+    <div class="question" id="q55">
+      <p>Tranquility : peace</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q55a" name="q55" value="A"><label for="q55a">Chaos : disorder</label></div>
+        <div class="option"><input type="radio" id="q55b" name="q55" value="B"><label for="q55b">Joy : happiness</label></div>
+        <div class="option"><input type="radio" id="q55c" name="q55" value="C"><label for="q55c">Calm : quiet</label></div>
+        <div class="option"><input type="radio" id="q55d" name="q55" value="D"><label for="q55d">Stress : worry</label></div>
+      </div>
+      <div class="correct-answer">Correct: Chaos : disorder</div>
+    </div>
+
+    <!-- Q56 -->
+    <div class="question" id="q56">
+      <p>Dignify : humiliate</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q56a" name="q56" value="A"><label for="q56a">Praise : criticize</label></div>
+        <div class="option"><input type="radio" id="q56b" name="q56" value="B"><label for="q56b">Honor : shame</label></div>
+        <div class="option"><input type="radio" id="q56c" name="q56" value="C"><label for="q56c">Respect : disrespect</label></div>
+        <div class="option"><input type="radio" id="q56d" name="q56" value="D"><label for="q56d">Elevate : lower</label></div>
+      </div>
+      <div class="correct-answer">Correct: Praise : criticize</div>
+    </div>
+
+    <!-- Q57 -->
+    <div class="question" id="q57">
+      <p>Cobbler : shoes</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q57a" name="q57" value="A"><label for="q57a">Machine : automobile</label></div>
+        <div class="option"><input type="radio" id="q57b" name="q57" value="B"><label for="q57b">Mechanic : car</label></div>
+        <div class="option"><input type="radio" id="q57c" name="q57" value="C"><label for="q57c">Barber : hair</label></div>
+        <div class="option"><input type="radio" id="q57d" name="q57" value="D"><label for="q57d">Tailor : clothes</label></div>
+      </div>
+      <div class="correct-answer">Correct: Machine : automobile</div>
+    </div>
+
+    <!-- Q58 -->
+    <div class="question" id="q58">
+      <p>Saw : carpenter</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q58a" name="q58" value="A"><label for="q58a">Scissors : barber</label></div>
+        <div class="option"><input type="radio" id="q58b" name="q58" value="B"><label for="q58b">Hammer : blacksmith</label></div>
+        <div class="option"><input type="radio" id="q58c" name="q58" value="C"><label for="q58c">Wrench : mechanic</label></div>
+        <div class="option"><input type="radio" id="q58d" name="q58" value="D"><label for="q58d">Pen : writer</label></div>
+      </div>
+      <div class="correct-answer">Correct: Scissors : barber</div>
+    </div>
+
+    <!-- Q59 -->
+    <div class="question" id="q59">
+      <p>Customer : shopkeeper</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q59a" name="q59" value="A"><label for="q59a">Client : lawyer</label></div>
+        <div class="option"><input type="radio" id="q59b" name="q59" value="B"><label for="q59b">Patient : doctor</label></div>
+        <div class="option"><input type="radio" id="q59c" name="q59" value="C"><label for="q59c">Student : teacher</label></div>
+        <div class="option"><input type="radio" id="q59d" name="q59" value="D"><label for="q59d">Guest : host</label></div>
+      </div>
+      <div class="correct-answer">Correct: Client : lawyer</div>
+    </div>
+
+    <!-- Q60 -->
+    <div class="question" id="q60">
+      <p>Cardiology : heart</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q60a" name="q60" value="A"><label for="q60a">Psychology : mind</label></div>
+        <div class="option"><input type="radio" id="q60b" name="q60" value="B"><label for="q60b">Pharmacology : drugs</label></div>
+        <div class="option"><input type="radio" id="q60c" name="q60" value="C"><label for="q60c">Biology : life</label></div>
+        <div class="option"><input type="radio" id="q60d" name="q60" value="D"><label for="q60d">Dermatology : skin</label></div>
+      </div>
+      <div class="correct-answer">Correct: Pharmacology : drugs</div>
+    </div>
+
+    <!-- Q61 -->
+    <div class="question" id="q61">
+      <p>Horse : colt</p>
+      <div class="options">
+        <div class="option"><input type="radio" id="q61a" name="q61" value="A"><label for="q61a">Dog : puppy</label></div>
+        <div class="option"><input type="radio" id="q61b" name="q61" value="B"><label for="q61b">Cat : kitten</label></div>
+        <div class="option"><input type="radio" id="q61c" name="q61" value="C"><label for="q61c">Sheep : lamb</label></div>
+        <div class="option"><input type="radio" id="q61d" name="q61" value="D"><label for="q61d">Cow : calf</label></div>
+      </div>
+      <div class="correct-answer">Correct: Sheep : lamb</div>
+    </div>
+
+    <div class="actions">
+      <button type="button" onclick="checkAnswers()">Submit</button>
+      <button type="button" onclick="resetQuiz()">Reset</button>
+    </div>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    // Answer key
+    const answers = {
+    q29: "C", q30: "A", q31: "B", q32: "B", q33: "A",
+    q34: "C", q35: "B", q36: "A", q37: "A", q38: "A",
+    q39: "A", q40: "C", q41: "A", q42: "C", q43: "C",
+    q44: "C", q45: "A", q46: "B", q47: "B", q48: "A",
+    q49: "A", q50: "A", q51: "A", q52: "B", q53: "A",
+    q54: "C", q55: "A", q56: "A", q57: "A", q58: "A",
+    q59: "A", q60: "B", q61: "C"
+    };
+    // Shuffle helper
+    function shuffleArray(arr){
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Shuffle options inside each question
+    function shuffleOptions(){
+      document.querySelectorAll(".options").forEach(group=>{
+        const opts = Array.from(group.children);
+        shuffleArray(opts);
+        opts.forEach(opt => group.appendChild(opt));
+      });
+    }
+
+    // Shuffle questions
+    function shuffleQuestions(){
+      const quizForm = document.getElementById("quizForm");
+      const questions = Array.from(quizForm.querySelectorAll(".question"));
+      for(let i = questions.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        quizForm.insertBefore(questions[j], questions[i]);
+        questions.splice(j, 1);
+      }
+    }
+
+    // Check answers
+    function checkAnswers(){
+      let score = 0;
+      const total = Object.keys(answers).length;
+
+      for(const q in answers){
+        const questionDiv = document.getElementById(q);
+        if(!questionDiv) continue;
+
+        const correctDiv = questionDiv.querySelector(".correct-answer");
+        const radios = questionDiv.querySelectorAll(`input[name="${q}"]`);
+        const labels = questionDiv.querySelectorAll(".option label");
+
+        questionDiv.classList.remove("correct","incorrect");
+        correctDiv.style.display = "none";
+        labels.forEach(l => { l.style.fontWeight = ""; l.style.color = ""; });
+
+        let answered = false;
+        radios.forEach(r=>{
+          if(r.checked){
+            answered = true;
+            if(r.value === answers[q]){
+              questionDiv.classList.add("correct");
+              score++;
+            }else{
+              questionDiv.classList.add("incorrect");
+              correctDiv.style.display = "block";
+              const rightInput = questionDiv.querySelector(`input[name="${q}"][value="${answers[q]}"]`);
+              if(rightInput){
+                const rightLabel = questionDiv.querySelector(`label[for="${rightInput.id}"]`);
+                if(rightLabel){
+                  rightLabel.style.color = "var(--correct)";
+                  rightLabel.style.fontWeight = "700";
+                }
+              }
+            }
+          }
+        });
+
+        if(!answered){
+          questionDiv.classList.add("incorrect");
+          correctDiv.style.display = "block";
+        }
+      }
+
+      const pct = Math.round((score/total)*100);
+      const feedback = pct>=80 ? "Excellent! 🎉" : pct>=50 ? "Good effort 👍" : "Keep practicing 💪";
+      document.getElementById("result").innerText = `Your Score: ${score} / ${total} (${pct}%) - ${feedback}`;
+    }
+
+    function resetQuiz(){
+      document.getElementById("quizForm").reset();
+      document.querySelectorAll(".question").forEach(q=>{
+        q.classList.remove("correct","incorrect");
+        const ca = q.querySelector(".correct-answer");
+        if(ca) ca.style.display = "none";
+        q.querySelectorAll(".option label").forEach(l=>{ l.style.fontWeight=""; l.style.color=""; });
+      });
+      document.getElementById("result").innerText = "";
+      shuffleOptions();
+      shuffleQuestions();
+    }
+
+    // Shuffle on page load
+    document.addEventListener("DOMContentLoaded", ()=>{
+      shuffleOptions();
+      shuffleQuestions();
+    });
+  </script>
+</body>
+</html>
